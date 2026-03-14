@@ -27,6 +27,7 @@ export default function AppsScreen() {
       await nextDNS.unblockApp(rule.appName).catch(() => {});
       updated.blockedToday = false;
     } else {
+      // limit — open modal
       setSelectedRule(rule);
       setLimitInput(String(rule.dailyLimitMinutes || 60));
       setModalVisible(true);
