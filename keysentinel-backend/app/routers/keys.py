@@ -41,7 +41,6 @@ async def assert_project_access(project_id: uuid.UUID, user: User, db: AsyncSess
 
 
 def compute_status(key: ApiKey) -> str:
-    """Compute the current status of a key based on expiry."""
     if key.status in ("leaked", "rotated"):
         return key.status
     now = datetime.now(timezone.utc)
@@ -174,12 +173,9 @@ async def rotate_key(
     key = result.scalar_one_or_none()
     if not key:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Key not found")
-
-    # Encrypt and store the new key value
     key.encrypted_value = encrypt_value(body.new_value)
     key.last_rotated_at = datetime.now(timezone.utc)
     key.status = "active"
-
     now = datetime.now(timezone.utc)
     event = RotationEvent(
         id=uuid.uuid4(),
