@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Standard network permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--
+        PACKAGE_USAGE_STATS is a "privileged" permission that must be granted
+        manually by the user via Settings > Apps > Special App Access > Usage Access.
+        tools:ignore suppresses the lint warning -- this is intentional.
+    -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Required for BootReceiver to auto-start the rule engine on device boot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MainApplication"
@@ -27,6 +39,10 @@
             </intent-filter>
         </activity>
 
+        <!--
+            BootReceiver: restarts the rule engine after device reboot.
+            Requires RECEIVE_BOOT_COMPLETED permission above.
+        -->
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
